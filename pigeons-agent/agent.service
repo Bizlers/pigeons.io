@@ -1,0 +1,14 @@
+[Unit]
+Description=Pigeon Agent Service
+
+[Service]
+EnvironmentFile=/etc/environment
+ExecStart=/etc/init.d/agent.sh start
+ExecStop=/etc/init.d/agent.sh stop
+Type=forking
+
+[Install]
+WantedBy=multi-user.target
+
+
+

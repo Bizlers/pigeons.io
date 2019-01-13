@@ -1,0 +1,10 @@
+/target
+/.settings
+/bin
+/.classpath
+TMP_ACTIVATE_*
+*.log
+/.project
+/dependency-reduced-pom.xml
+/pom.xml.versionsBackup
+/agent_log/

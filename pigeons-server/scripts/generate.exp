@@ -1,0 +1,105 @@
+#!/usr/bin/expect -f
+ set timeout 5
+
+ spawn openssl genrsa -des3 -out [lindex $argv 0] [lindex $argv 1]
+ expect "Enter pass phrase for"
+ send [lindex $argv 2]
+ send "\n"
+
+ expect "Verifying - Enter pass phrase for"
+ send [lindex $argv 2]
+ send "\n"
+
+ expect "sleep"
+
+ spawn openssl req -out [lindex $argv 3] -key [lindex $argv 0] -new
+ expect "Enter pass phrase for"
+ send [lindex $argv 2]
+ send "\n"
+
+ expect "Country Name (2 letter code)"
+ send [lindex $argv 4]
+ send "\n"
+
+ expect "State or Province Name (full name)"
+ send [lindex $argv 5]
+ send "\n"
+
+ expect "Locality Name (eg, city)"
+ send [lindex $argv 6]
+ send "\n"
+
+ expect "Organization Name (eg, company)"
+ send [lindex $argv 7]
+ send "\n"
+
+ expect "Organizational Unit Name (eg, section)"
+ send [lindex $argv 8]
+ send "\n"
+
+ expect "Common Name (e.g. server FQDN or YOUR name) "
+ send [lindex $argv 9]
+ send "\n"
+
+ expect "Email Address "
+ send [lindex $argv 10]
+ send "\n"
+
+ expect "A challenge password "
+ send [lindex $argv 2]
+ send "\n"
+
+ expect "An optional company name "
+ send [lindex $argv 7]
+ send "\n"
+
+ expect "sleep"
+ 
+ spawn openssl x509 -req -in [lindex $argv 3] -CA [lindex $argv 11] -CAkey [lindex $argv 12] -CAcreateserial -out [lindex $argv 13] -days [lindex $argv 14]
+
+ expect "Enter pass phrase for"
+ send [lindex $argv 17]
+ send "\n"
+
+ expect "sleep"
+
+ spawn sh  [lindex $argv 18] [lindex $argv 13]  [lindex $argv 0]  [lindex $argv 15]
+
+ expect "sleep"
+
+ expect "Enter pass phrase for"
+ send [lindex $argv 2]
+ send "\n"
+
+ expect "Enter Export Password"
+ send [lindex $argv 2]
+ send "\n"
+
+ expect "Verifying - Enter Export Password"
+ send [lindex $argv 2]
+ send "\n"
+
+ expect "sleep"
+
+ spawn keytool -importkeystore -srckeystore [lindex $argv 15] -destkeystore [lindex $argv 16] -srcstoretype PKCS12
+
+ expect "Enter destination keystore password"
+ send [lindex $argv 2]
+ send "\n"
+
+ expect "Re-enter new password"
+ send [lindex $argv 2]
+ send "\n"
+
+ expect "Enter source keystore password"
+ send [lindex $argv 2]
+ send "\n"
+
+ expect {
+       "Existing entry"     { send "yes"  ;send "\n";exp_continue } 
+        timeout {exp_continue}
+       "Import command completed"{exit 1}
+        }
+
+ 
+ 
